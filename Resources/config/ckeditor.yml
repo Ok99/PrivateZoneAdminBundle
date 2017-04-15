@@ -1,0 +1,33 @@
+ivory_ck_editor:
+    plugins:
+        youtube:
+            path: "/bundles/ok99privatezoneadmin/plugins/youtube/"
+            filename: "plugin.js"
+        lineutils:
+            path: "/bundles/ok99privatezoneadmin/plugins/lineutils/"
+            filename: "plugin.js"
+        widget:
+            path: "/bundles/ok99privatezoneadmin/plugins/widget/"
+            filename: "plugin.js"
+        image2:
+            path: "/bundles/ok99privatezoneadmin/plugins/image2/"
+            filename: "plugin.js"
+        specialchar:
+            path: "/bundles/ok99privatezoneadmin/plugins/specialchar/"
+            filename: "plugin.js"
+    default_config: default
+    configs:
+        default:
+            filebrowserBrowseRoute: admin_privatezonecore_media_media_browser
+            filebrowserImageBrowseRoute: admin_privatezonecore_media_media_browser
+            filebrowserImageBrowseRouteParameters:
+                provider: sonata.media.provider.image
+                hide_context: true
+            filebrowserUploadRoute: admin_privatezonecore_media_media_upload
+            filebrowserUploadRouteParameters:
+                provider: sonata.media.provider.file
+                hide_context: true
+            filebrowserImageUploadRoute: admin_privatezonecore_media_media_upload
+            filebrowserImageUploadRouteParameters:
+                provider: sonata.media.provider.image
+                hide_context: true

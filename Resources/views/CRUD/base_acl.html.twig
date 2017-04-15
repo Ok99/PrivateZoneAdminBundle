@@ -1,0 +1,20 @@
+{% extends base_template %}
+
+{% block actions %}
+    <div class="btn-group">{% spaceless %}
+        {% include 'Ok99PrivateZoneAdminBundle:Button:show_button.html.twig' %}
+        {% include 'Ok99PrivateZoneAdminBundle:Button:history_button.html.twig' %}
+        {% include 'Ok99PrivateZoneAdminBundle:Button:acl_button.html.twig' %}
+    {% endspaceless %}</div>
+{% endblock %}
+
+{% import 'SonataAdminBundle:CRUD:base_acl_macro.html.twig' as acl %}
+
+{% block form %}
+    {% block form_acl_roles %}
+        {{ acl.render_form(aclRolesForm, permissions, 'td_role', admin, admin_pool, object) }}
+    {% endblock %}
+    {% block form_acl_users %}
+        {{ acl.render_form(aclUsersForm, permissions, 'td_username', admin, admin_pool, object) }}
+    {% endblock %}
+{% endblock %}

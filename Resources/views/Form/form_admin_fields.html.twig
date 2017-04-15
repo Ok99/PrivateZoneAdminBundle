@@ -1,0 +1,569 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+        {%- for error in errors -%}
+            {{ error.message }}<br>
+        {%- endfor -%}
+    {%- endif %}
+{%- endblock form_errors %}
+
+{% block form_widget_simple %}
+    {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+    {{ parent() }}
+{% endblock form_widget_simple %}
+
+{% block textarea_widget %}
+    {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+    {{ parent() }}
+{% endblock textarea_widget %}
+
+{# Labels #}
+{% block form_label %}
+{% spaceless %}
+
+    {% set label_class = "" %}
+    {% if sonata_admin.admin and sonata_admin.admin.getConfigurationPool().getOption('form_type') == 'horizontal' %}
+        {% set label_class = " control-label col-sm-3" %}
+    {% else %}
+        {% set label_class = " control-label" %}
+    {% endif%}
+
+    {#{{ sonata_admin.admin.getConfigurationPool().getOption('form_type') }}#}
+    {% if label is not sameas(false) %}
+        {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ label_class }) %}
+
+        {% if not compound %}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {% endif %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+
+        {% if in_list_checkbox is defined and in_list_checkbox and widget is defined %}
+            <label{% for attrname,attrvalue in attr %} {{attrname}}="{{attrvalue}}"{% endfor %}>
+                {{ widget|raw }}
+                <span>
+                    {% if not sonata_admin.admin %}
+                        {{- label|trans({}, translation_domain) -}}
+                    {% else %}
+                        {{- label|trans({}, sonata_admin.field_description.translationDomain) -}}
+                    {% endif%}
+                </span>
+            </label>
+        {% else %}
+            <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+                {% if not sonata_admin.admin%}
+                    {% if errors|length > 0 %}
+                        <i class="fa fa-times-circle-o"></i>
+                    {% endif %}
+                    {{- label|trans({}, translation_domain) -}}
+                {% else %}
+                    {% if errors|length > 0 %}
+                        <i class="fa fa-times-circle-o"></i>
+                    {% endif %}
+                    {{ sonata_admin.admin.trans(label, {}, sonata_admin.field_description.translationDomain) }}
+                {% endif %}
+            </label>
+        {% endif %}
+    {% endif %}
+{% endspaceless %}
+{% endblock form_label %}
+
+{% block widget_container_attributes_choice_widget %}
+    {% spaceless %}
+        id="{{ id }}"
+        {% for attrname,attrvalue in attr %}{{attrname}}="{% if attrname == 'class' %}list-unstyled {% endif%}{{attrvalue}}" {% endfor %}
+        {% if "class" not in attr %}class="list-unstyled"{%endif %}
+    {% endspaceless %}
+{% endblock %}
+
+{% block choice_widget_expanded %}
+{% spaceless %}
+    <ul {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            <li>
+                {{ form_widget(child, {'horizontal': false, 'horizontal_input_wrapper_class': ''}) }} {# {'horizontal': false, 'horizontal_input_wrapper_class': ''} needed to avoid MopaBootstrapBundle messing with the DOM #}
+                {{ form_label(child) }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endspaceless %}
+{% endblock choice_widget_expanded %}
+
+{% block choice_widget %}
+{% spaceless %}
+    {% if compound %}
+        <ul {{ block('widget_container_attributes_choice_widget') }}>
+        {% for child in form %}
+            <li>
+                {% set form_widget_content %}
+                    {{ form_widget(child, {'horizontal': false, 'horizontal_input_wrapper_class': ''}) }} {# {'horizontal': false, 'horizontal_input_wrapper_class': ''} needed to avoid MopaBootstrapBundle messing with the DOM #}
+                {% endset %}
+                {{ form_label(child, child.vars.label|default(null), { 'in_list_checkbox' : true, 'widget' : form_widget_content } ) }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+    {% if sonata_admin.admin %}
+        {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+    {% endif %}
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {% if empty_value is not none %}
+            <option value="">
+                {% if not sonata_admin.admin %}
+                    {{- empty_value|trans({}, translation_domain) -}}
+                {% else %}
+                    {{- empty_value|trans({}, sonata_admin.field_description.translationDomain) -}}
+                {% endif%}
+            </option>
+        {% endif %}
+        {% if preferred_choices|length > 0 %}
+            {% set options = preferred_choices %}
+            {{ block('choice_widget_options') }}
+            {% if choices|length > 0 %}
+                <option disabled="disabled">{{ separator }}</option>
+            {% endif %}
+        {% endif %}
+        {% set options = choices %}
+        {{ block('choice_widget_options') }}
+    </select>
+    {% endif %}
+{% endspaceless %}
+{% endblock choice_widget %}
+
+{% block form_row %}
+    {% set label_class = "" %}
+    {% set div_class = "" %}
+    {% if sonata_admin.admin and sonata_admin.admin.getConfigurationPool().getOption('form_type') == 'horizontal' %}
+        {% set label_class = "control-label col-sm-3" %}
+        {% set div_class = "col-sm-9 col-md-9" %}
+    {% else %}
+        {% set label_class = "control-label" %}
+    {% endif%}
+
+    {% if sonata_admin is not defined or not sonata_admin_enabled or not sonata_admin.field_description %}
+        <div class="form-group {% if errors|length > 0%} has-error{% endif %}">
+            {{ form_label(form, label|default(null)) }}
+            <div class="{% if label is sameas(false) %}sonata-collection-row-without-label{% endif %}">
+                {{ form_widget(form, {'horizontal': false, 'horizontal_input_wrapper_class': ''}) }} {# {'horizontal': false, 'horizontal_input_wrapper_class': ''} needed to avoid MopaBootstrapBundle messing with the DOM #}
+                {% if errors|length > 0 %}
+                    <div class="help-block sonata-ba-field-error-messages">
+                        {{ form_errors(form) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="form-group{% if errors|length > 0%} has-error{%endif%}" id="sonata-ba-field-container-{{ id }}">
+            {% block label %}
+                {% if sonata_admin.field_description.options.name is defined %}
+                    {{ form_label(form, sonata_admin.field_description.options.name, { 'attr' : {'class' : label_class} }) }}
+                {% else %}
+                    {{ form_label(form, label|default(null), { 'attr' : {'class' : label_class} }) }}
+                {% endif %}
+            {% endblock %}
+
+            {% set has_label = sonata_admin.field_description.options.name is defined or label is not sameas(false) %}
+            <div class="{{ div_class }} sonata-ba-field sonata-ba-field-{{ sonata_admin.edit }}-{{ sonata_admin.inline }} {% if errors|length > 0 %}sonata-ba-field-error{% endif %} {% if not has_label %}sonata-collection-row-without-label{% endif %}">
+
+                {{ form_widget(form, {'horizontal': false, 'horizontal_input_wrapper_class': ''}) }} {# {'horizontal': false, 'horizontal_input_wrapper_class': ''} needed to avoid MopaBootstrapBundle messing with the DOM #}
+
+                {% if errors|length > 0 %}
+                    <div class="help-block sonata-ba-field-error-messages">
+                        {{ form_errors(form) }}
+                    </div>
+                {% endif %}
+
+                {% if sonata_admin.field_description.help %}
+                    <span class="help-block sonata-ba-field-help">{{ sonata_admin.admin.trans(sonata_admin.field_description.help, {}, sonata_admin.field_description.translationDomain)|raw }}</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock form_row %}
+
+{% block sonata_type_native_collection_widget_row %}
+{% spaceless %}
+    <div class="sonata-collection-row">
+        {% if allow_delete %}
+            <a href="#" class="btn sonata-collection-delete"><i class="fa fa-minus-circle"></i></a>
+        {% endif %}
+        {{ form_row(child) }}
+    </div>
+{% endspaceless %}
+{% endblock sonata_type_native_collection_widget_row %}
+
+{% block sonata_type_native_collection_widget %}
+{% spaceless %}
+    {% if prototype is defined %}
+        {% set child = prototype %}
+        {% set attr = attr|merge({'data-prototype': block('sonata_type_native_collection_widget_row'), 'data-prototype-name': prototype.vars.name, 'class': attr.class|default('') }) %}
+    {% endif %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        {% for child in form %}
+            {{ block('sonata_type_native_collection_widget_row') }}
+        {% endfor %}
+        {{ form_rest(form) }}
+        {% if allow_add %}
+            <div><a href="#" class="btn sonata-collection-add"><i class="fa fa-plus-circle"></i></a></div>
+        {% endif %}
+    </div>
+{% endspaceless %}
+{% endblock sonata_type_native_collection_widget %}
+
+{% block sonata_type_immutable_array_widget %}
+    {% spaceless %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_errors(form) }}
+
+            {% for key, child in form %}
+                {{ block('sonata_type_immutable_array_widget_row') }}
+            {% endfor %}
+
+            {{ form_rest(form) }}
+        </div>
+    {% endspaceless %}
+{% endblock sonata_type_immutable_array_widget %}
+
+{% block sonata_type_immutable_array_widget_row %}
+    {% spaceless %}
+        <div class="form-group{% if errors|length > 0%} error{%endif%}" id="sonata-ba-field-container-{{ id }}-{{ key }}">
+
+            {{ form_label(child) }}
+
+            {% set div_class = "" %}
+            {% if sonata_admin.admin and sonata_admin.admin.getConfigurationPool().getOption('form_type') == 'horizontal' %}
+                {% set div_class = "col-sm-9 col-md-9" %}
+            {% endif%}
+
+            <div class="{{ div_class }} sonata-ba-field sonata-ba-field-{{ sonata_admin.edit }}-{{ sonata_admin.inline }} {% if errors|length > 0 %}sonata-ba-field-error{% endif %}">
+                {{ form_widget(child, {'horizontal': false, 'horizontal_input_wrapper_class': ''}) }} {# {'horizontal': false, 'horizontal_input_wrapper_class': ''} needed to avoid MopaBootstrapBundle messing with the DOM #}
+            </div>
+
+            {% if errors|length > 0 %}
+                <div class="help-block sonata-ba-field-error-messages">
+                    {{ form_errors(child) }}
+                </div>
+            {% endif %}
+        </div>
+    {% endspaceless %}
+{% endblock %}
+
+{% block sonata_type_model_autocomplete_widget %}
+{% spaceless %}
+
+    {{ form_widget(form.title) }}
+
+    {% for child in form %}
+        {% if not child.rendered %}
+            {{ form_widget(child) }}
+        {% endif %}
+    {% endfor %}
+
+    <script>
+        (function ($) {
+            var autocompleteInput = $("#{{ form.title.vars.id }}");
+            autocompleteInput.select2({
+                placeholder: "{{ placeholder }}",
+                allowClear: {{ required ? 'false' : 'true' }},
+                enable: {{ disabled ? 'false' : 'true' }},
+                readonly: {{ read_only ? 'true' : 'false' }},
+                minimumInputLength: {{ minimum_input_length }},
+                multiple: {{ multiple ? 'true' : 'false' }},
+                ajax: {
+                    url:  "{{ url ?: url(route.name, route.parameters|default([])) }}",
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function (term, page) { // page is the one-based page number tracked by Select2
+                        return {
+                                //search term
+                                "{{ req_param_name_search }}": term,
+
+                                // page size
+                                "{{ req_param_name_items_per_page }}": {{ items_per_page }},
+
+                                // page number
+                                "{{ req_param_name_page_number }}": page,
+
+                                // admin
+                                'uniqid': "{{ sonata_admin.admin.uniqid }}",
+                                'code':   "{{ sonata_admin.admin.code }}",
+                                'field':  "{{ name }}"
+
+                                // other parameters
+                                {% if req_params is not empty %},
+                                    {%- for key, value in req_params -%}
+                                        "{{- key|e('js') -}}": "{{- value|e('js') -}}"
+                                        {%- if not loop.last -%}, {% endif -%}
+                                    {%- endfor -%}
+                                {% endif %}
+                            };
+                    },
+                    results: function (data, page) {
+                        // notice we return the value of more so Select2 knows if more results can be loaded
+                        return {results: data.items, more: data.more};
+                    }
+                },
+                formatResult: function (item) {
+                    return {% block sonata_type_model_autocomplete_dropdown_item_format %}'<div class="sonata-autocomplete-dropdown-item">'+item.label+'</div>'{% endblock %};// format of one dropdown item
+                },
+                formatSelection: function (item) {
+                    return {% block sonata_type_model_autocomplete_selection_format %}item.label{% endblock %};// format selected item '<b>'+item.label+'</b>';
+                },
+                dropdownCssClass: "{{ dropdown_css_class }}",
+                escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+            });
+
+            autocompleteInput.on("change", function(e) {
+
+                // console.log("change "+JSON.stringify({val:e.val, added:e.added, removed:e.removed}));
+
+                // add new input
+                var el = null;
+                if (undefined !== e.added) {
+
+                    var addedItems = e.added;
+
+                    if(!$.isArray(addedItems)) {
+                        addedItems = [addedItems];
+                    }
+
+                    var length = addedItems.length;
+                    for (var i = 0; i < length; i++) {
+                        el = addedItems[i];
+                        $("#{{ form.identifiers.vars.id }}").append('<input type="hidden" name="{{ form.identifiers.vars.full_name }}[]" value="'+el.id+'" />');
+                    }
+                }
+
+                // remove input
+                if (undefined !== e.removed && null !== e.removed) {
+                    var removedItems = e.removed;
+
+                    if(!$.isArray(removedItems)) {
+                        removedItems = [removedItems];
+                    }
+
+                    var length = removedItems.length;
+                    for (var i = 0; i < length; i++) {
+                        el = removedItems[i];
+                        $('#{{ form.identifiers.vars.id }} input:hidden[value="'+el.id+'"]').remove();
+                    }
+                }
+            });
+
+            // Initialise the autocomplete
+            var data = [];
+            {% if multiple -%}
+                data = [
+                {%- for key, label_text in value.labels -%}
+                    {id: '{{ value.identifiers[key]|e('js') }}', label:'{{ label_text|e('js') }}'}
+                    {%- if not loop.last -%}, {% endif -%}
+                {%- endfor -%}
+                ];
+            {%- elseif value.labels[0] is defined -%}
+                data = {id: '{{ value.identifiers[0]|e('js') }}', label:'{{ value.labels[0]|e('js') }}'};
+            {%- endif  %}
+            if (undefined==data.length || 0<data.length) { // Leave placeholder if no data set
+                autocompleteInput.select2('data', data);
+            }
+        })(jQuery);
+    </script>
+{% endspaceless %}
+{% endblock sonata_type_model_autocomplete_widget %}
+
+{% block ok99_privatezone_type_date_picker_widget %}
+    {% spaceless %}
+        <div class="form-group">
+            <div class="input-group date" id="{{ id }}Group">
+                {% set attr = attr|merge({'data-date-format': moment_format}) %}
+                {{ block('date_widget') }}
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <script type="text/javascript">
+            jQuery(function ($) {
+                $('#{{ id }}Group').datetimepicker({{ dp_options|json_encode|raw }});
+            });
+        </script>
+    {% endspaceless %}
+{% endblock ok99_privatezone_type_date_picker_widget %}
+
+{% block ok99_privatezone_type_datetime_picker_widget %}
+    {% spaceless %}
+        <div class="form-group">
+            <div class="input-group date" id="{{ id }}Group">
+                {{ block('datetime_widget') }}
+                <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+            </div>
+        </div>
+        <script type="text/javascript">
+            jQuery(function ($) {
+                $('#{{ id }}Group').datetimepicker({{ dp_options|json_encode|raw }});
+            });
+        </script>
+    {% endspaceless %}
+{% endblock ok99_privatezone_type_datetime_picker_widget %}
+
+{% block sonata_media_type_widget %}
+    <div class="form-group clearfix">
+        <div class="pull-left">
+            {% if value is not empty and value.providerReference %}
+                <div class="pull-left" style="margin-right: 25px">
+                    {% thumbnail value, 'admin' with {'class': 'img-polaroid media-object'} %}<br>
+                    {% if sonata_admin_enabled is defined and sonata_admin_enabled %}
+                        <a href="{{ url('admin_privatezonecore_media_media_edit', {id: value.id}) }}"><strong>{{ value.name }}</strong></a>
+                    {% else %}
+                        <strong>{{ value.name }}</strong>
+                    {% endif %}
+                </div>
+
+            {% else %}
+                <div class="pull-left" style="margin-right: 25px">
+                    <img src="{{ asset('bundles/sonatamedia/grey.png') }}" class="img-polaroid media-object" style="width: 85px; height: 85px"/>
+                </div>
+                <strong>{{ 'no_linked_media'|trans({}, 'Ok99PrivateZoneMediaBundle') }}</strong> <br />
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {{ 'link_media'|trans({}, 'Ok99PrivateZoneMediaBundle') }}
+            {{ block('form_widget') }}
+        </div>
+    </div>
+{% endblock sonata_media_type_widget %}
+
+{% block string_widget %}
+    {% spaceless %}
+        {{ form.vars.value }}
+    {% endspaceless %}
+{% endblock %}
+
+{% block ok99_privatezone_type_autocomplete_widget %}
+    {% spaceless %}
+        <div class="input-group">
+            {{ block('form_widget_simple') }}
+            <a href="#" class="input-group-addon dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+            <ul class="dropdown-menu" style="right:0;max-height:150px;overflow-y:scroll;overflow-x:hidden">
+                {% for key,value in choices %}
+                    <li><a href="#" class="dropdown-option" onclick="$('#{{ form.vars.id }}').val('{{ key }}');return false">{{ value }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endspaceless %}
+{% endblock %}
+
+{% block money_widget -%}
+    {% if form.parent is defined and form.parent[form.vars.name ~ 'Currency'] is defined %}
+        <div class="row">
+            <div class="col-xs-8">
+                {{ form_widget(form.parent[form.vars.name]) }}
+            </div>
+            <div class="col-xs-4">
+                {{ form_widget(form.parent[form.vars.name ~ 'Currency']) }}
+            </div>
+        </div>
+    {% else %}
+        {{ money_pattern|replace({ '{{ widget }}': block('form_widget_simple') })|raw }}
+    {% endif %}
+{%- endblock money_widget %}
+
+{%- block ok99_privatezone_type_sortable_entity_widget -%}
+    <input type="hidden" {{ block('widget_attributes') }} value="{{ value|join(",") }}">
+    <script>
+        {%- set options = choices -%}
+        var data = {{ block('ok99_privatezone_type_sortable_entity_widget_options') }};
+        $("#{{ id }}").select2({data: data, multiple: true, dropdownAutoWidth: true});
+        $("#{{ id }}").select2('container').find('ul.select2-choices').sortable({
+            containment: 'parent',
+            start: function() { $('#{{ id }}').select2("onSortStart"); },
+            update: function() { $('#{{ id }}').select2("onSortEnd"); }
+        });
+        $("#{{ id }}").parents('form:first').submit(function (event) {
+            var values   = $("#{{ id }}").val().split(',').filter(function(a) { return a !== ""; });
+            var baseName = $("#{{ id }}").attr('name');
+            baseName = baseName.substring(0, baseName.length-1);
+            for (var i=0; i<values.length; i++) {
+                jQuery('<input>')
+                        .attr('type', 'hidden')
+                        .attr('name', baseName+i+']')
+                        .val(values[i])
+                        .appendTo($("#{{ id }}").parents('form:first'));
+            }
+            $("#{{ id }}").remove();
+        });
+    </script>
+{%- endblock ok99_privatezone_type_sortable_entity_widget -%}
+
+{%- block ok99_privatezone_type_sortable_entity_widget_options -%}
+    [
+    {%- for group_label, choice in options -%}
+        {%- if choice is iterable -%}
+            {%- if loop.index > 1 -%},{%- endif -%}[
+                {%- set options = choice -%}
+                {{- block('choice_widget_options') -}}
+            ]
+        {%- else -%}
+            {%- if loop.index > 1 -%},{%- endif -%}{ id: '{{ choice.value }}', text: '{{ choice.label|trans({}, translation_domain) }}' }
+        {%- endif -%}
+    {%- endfor -%}
+    ]
+{%- endblock ok99_privatezone_type_sortable_entity_widget_options -%}
+
+{% block ok99_privatezone_simple_formatter_type_widget %}
+
+    <!-- widget: sonata_simple_formatter_type_widget -->
+
+    {{ form_widget(form) }}
+
+    <script>
+        jQuery(document).ready(function() {
+            if (typeof CKEDITOR === 'undefined') {
+                return;
+            }
+            CKEDITOR.plugins.addExternal("youtube", "/bundles/ok99privatezoneadmin/plugins/youtube/");
+            CKEDITOR.plugins.addExternal("lineutils", "/bundles/ok99privatezoneadmin/plugins/lineutils/");
+            CKEDITOR.plugins.addExternal("widget", "/bundles/ok99privatezoneadmin/plugins/widget/");
+            CKEDITOR.plugins.addExternal("image2", "/bundles/ok99privatezoneadmin/plugins/image2/");
+            CKEDITOR.plugins.addExternal("specialchar", "/bundles/ok99privatezoneadmin/plugins/specialchar/");
+            var instance = {{ ckeditor_replace(form.vars.id, ckeditor_configuration) }}
+            instance.on('change', function() {
+                $('#{{ form.vars.id }}').val(this.getData());
+            });
+        });
+    </script>
+{% endblock ok99_privatezone_simple_formatter_type_widget %}
+
+{% block ok99_privatezone_type_dynamic_choice_widget -%}
+    {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {% if empty_value is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+        {%- endif %}
+        {% set options = choices -%}
+        {{- block('choice_widget_options') -}}
+    </select>
+    <script>
+        var {{ name }}CompleteChoices = {{ complete_choices|json_encode()|raw }};
+        $('#{{ form.parent[source_field].vars.id }}').on('change', function() {
+            var newData = {{ name }}CompleteChoices[$(this).val()] || [],
+                    select = document.getElementById('{{ form.vars.id }}');
+
+            $(select).select2('destroy');
+            select.options.length = 0;
+            for (var i = 0; i < newData.length; i++) {
+                select.options[i] = new Option(newData[i].text, newData[i].id);
+            }
+            $(select).select2({width:'100%'});
+            $(select).trigger('change');
+        });
+    </script>
+{%- endblock ok99_privatezone_type_dynamic_choice_widget %}

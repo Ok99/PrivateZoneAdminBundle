@@ -1,0 +1,70 @@
+services:
+    ok99.privatezone.core.date.moment_format_converter:
+        class: Ok99\PrivateZoneCore\AdminBundle\Date\MomentFormatConverter
+
+    ok99.privatezone.core.form.type.date_picker:
+        class: Ok99\PrivateZoneCore\AdminBundle\Form\Type\DatePickerType
+        tags:
+            - { name: form.type, alias: ok99_privatezone_type_date_picker }
+        arguments: ['@ok99.privatezone.core.date.moment_format_converter']
+
+    ok99.privatezone.core.form.type.datetime_picker:
+        class: Ok99\PrivateZoneCore\AdminBundle\Form\Type\DateTimePickerType
+        tags:
+            - { name: form.type, alias: ok99_privatezone_type_datetime_picker }
+        arguments: ['@ok99.privatezone.core.date.moment_format_converter']
+
+    ok99.privatezone.admin.form.type.string:
+        class: Ok99\PrivateZoneCore\AdminBundle\Form\Type\StringType
+        tags:
+            - { name: form.type, alias: string }
+
+    ok99.privatezone.admin.form.type.autocomplete:
+        class: Ok99\PrivateZoneCore\AdminBundle\Form\Type\AutocompleteType
+        tags:
+            - { name: form.type, alias: ok99_privatezone_type_autocomplete }
+
+    ok99.privatezone.admin.form.type.sortable_entity:
+        class: Ok99\PrivateZoneCore\AdminBundle\Form\Type\SortableEntityType
+        tags:
+            - { name: form.type, alias: ok99_privatezone_type_sortable_entity }
+        arguments: [ @doctrine, @property_accessor ]
+
+    twig.extension.text:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
+
+    ok99.privatezone.admin.block.formatter:
+        class: Ok99\PrivateZoneCore\AdminBundle\Block\FormatterBlockService
+        tags:
+            - { name: sonata.block }
+        arguments: [ sonata.block.empty, @templating, @translator ]
+
+    ok99.privatezone.admin.twig_extension:
+        class: Ok99\PrivateZoneCore\AdminBundle\Twig\Ok99PrivateZoneAdminExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    twig.extension.stringloader:
+        class: Twig_Extension_StringLoader
+        tags:
+            - { name: twig.extension }
+
+    ok99.privatezone.formatter.form.type.simple:
+        class: Ok99\PrivateZoneCore\AdminBundle\Form\Type\SimpleFormatterType
+        arguments: [@ivory_ck_editor.config_manager]
+        tags:
+            - { name: form.type, alias: ok99_privatezone_simple_formatter_type }
+
+    sonata.admin.object.manipulator.acl.admin:
+        class: Ok99\PrivateZoneCore\AdminBundle\Util\AdminObjectAclManipulator
+        arguments: [@form.factory, Sonata\AdminBundle\Security\Acl\Permission\MaskBuilder]
+        calls:
+            - [ setContainer, [@service_container] ]
+
+    ok99.privatezone.admin.form.type.dynamic_choice:
+        class: Ok99\PrivateZoneCore\AdminBundle\Form\Type\DynamicChoiceType
+        tags:
+            - { name: form.type, alias: ok99_privatezone_type_dynamic_choice }

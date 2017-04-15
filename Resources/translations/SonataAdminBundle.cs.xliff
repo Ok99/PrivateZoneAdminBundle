@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="cs" datatype="plaintext" original="file.ext">
+        <body>
+			<trans-unit id="No image selected">
+                <source>No image selected</source>
+                <target>Není vybrán žádný obrázek</target>
+            </trans-unit>
+            <trans-unit id="No collection selected">
+                <source>No collection selected</source>
+                <target>Není vybrána žádná kolekce</target>
+            </trans-unit>
+            <trans-unit id="td_role">
+                <source>td_role</source>
+                <target>Role</target>
+            </trans-unit>
+            <trans-unit id="Sidebar behavior">
+                <source>Sidebar behavior</source>
+                <target>Chování menu</target>
+            </trans-unit>
+            <trans-unit id="Toggle Sidebar">
+                <source>Toggle Sidebar</source>
+                <target>Minimalizovat menu</target>
+            </trans-unit>
+            <trans-unit id="Sidebar Expand on Hover">
+                <source>Sidebar Expand on Hover</source>
+                <target>Rozbalit menu při najetí myší</target>
+            </trans-unit>
+            <trans-unit id="Color options">
+                <source>Color options</source>
+                <target>Nastavení barev</target>
+            </trans-unit>
+            <trans-unit id="Toggle Right Sidebar Skin">
+                <source>Toggle Right Sidebar Skin</source>
+                <target>Světlé barvy nabídky vpravo</target>
+            </trans-unit>
+            <trans-unit id="Blue">
+                <source>Blue</source>
+                <target>Modrá</target>
+            </trans-unit>
+            <trans-unit id="Black">
+                <source>Black</source>
+                <target>Šedá</target>
+            </trans-unit>
+            <trans-unit id="Purple">
+                <source>Purple</source>
+                <target>Fialová</target>
+            </trans-unit>
+            <trans-unit id="Green">
+                <source>Green</source>
+                <target>Zelená</target>
+            </trans-unit>
+            <trans-unit id="Red">
+                <source>Red</source>
+                <target>Červená</target>
+            </trans-unit>
+            <trans-unit id="Yellow">
+                <source>Yellow</source>
+                <target>Oranžová</target>
+            </trans-unit>
+            <trans-unit id="Blue Light">
+				<source>Blue Light</source>
+				<target>Modrá</target>
+			</trans-unit>
+			<trans-unit id="Black Light">
+				<source>Black Light</source>
+				<target>Šedá</target>
+			</trans-unit>
+			<trans-unit id="Purple Light">
+				<source>Purple Light</source>
+				<target>Fialová</target>
+			</trans-unit>
+			<trans-unit id="Green Light">
+				<source>Green Light</source>
+				<target>Zelená</target>
+			</trans-unit>
+			<trans-unit id="Red Light">
+				<source>Red Light</source>
+				<target>Červená</target>
+			</trans-unit>
+			<trans-unit id="Yellow Light">
+				<source>Yellow Light</source>
+				<target>Oranžová</target>
+			</trans-unit>
+			<trans-unit id="Suggest Event Classes">
+				<source>Suggest Event Classes</source>
+				<target>Kategorie odpovídající věku</target>
+			</trans-unit>
+			<trans-unit id="suggest_event_classes_description">
+				<source>suggest_event_classes_description</source>
+				<target><![CDATA[V příhlášce nabízí pouze ty kategorie, které jsou dle věku v&nbsp;souladu s pravidly.]]></target>
+			</trans-unit>
+        </body>
+    </file>
+</xliff>

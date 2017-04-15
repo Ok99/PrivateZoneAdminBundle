@@ -1,5 +1,5 @@
 {
-    "name": "Ok99/PrivateZoneAdminBundle",
+    "name": "ok99/privatezone-admin-bundle",
     "type": "symfony-bundle",
     "description": "Ok99 PrivateZoneCore AdminBundle",
     "keywords": ["symfony", "sonata"],
@@ -13,6 +13,7 @@
     "suggest": {
     },
     "autoload": {
-        "psr-4": { "Ok99\\PrivateZoneCore\\AdminBundle\\": "" }
-    }
+        "psr-0": { "Ok99\\PrivateZoneCore\\AdminBundle\\": "" }
+    },
+    "target-dir": "Ok99/PrivateZoneCore/AdminBundle",
 }

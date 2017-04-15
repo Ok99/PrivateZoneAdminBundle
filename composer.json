@@ -13,6 +13,6 @@
     "suggest": {
     },
     "autoload": {
-        "psr-0": { "Ok99\\PrivateZoneCore\\AdminBundle\\": "" }
+        "psr-4": { "Ok99\\PrivateZoneCore\\AdminBundle\\": "" }
     }
 }

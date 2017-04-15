@@ -15,5 +15,5 @@
     "autoload": {
         "psr-0": { "Ok99\\PrivateZoneCore\\AdminBundle\\": "" }
     },
-    "target-dir": "Ok99/PrivateZoneCore/AdminBundle",
+    "target-dir": "Ok99/PrivateZoneCore/AdminBundle"
 }

@@ -98,7 +98,11 @@ var Admin = {
                     allowClear: allowClearEnabled
                 });
 
-                if (undefined !== popover) {
+				// weird select fields tooltip
+                select.removeAttr('title');
+                select.parent().find('.select2-container').removeAttr('title');
+
+				if (undefined !== popover) {
                     select
                         .select2('container')
                         .popover(popover.options)

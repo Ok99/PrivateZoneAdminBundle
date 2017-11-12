@@ -33,9 +33,23 @@ file that was distributed with this source code.
                     <table class="table table-hover">
                         <tbody>
                             {% for admin in group.items %}
-								{% set admin_display = true %}
+                                {% set adminClass = get_class(admin) %}
 
-								{% if not pz_has_organizer_points_system and get_class(admin) == 'EventOrganizeEntryPointsAdmin' %}
+                                {% set admin_display = true %}
+
+								{% if adminClass == 'EventOrganizeEntryPointsAdmin' and not pz_has_organizer_points_system %}
+									{% set admin_display = false %}
+								{% endif %}
+
+								{% if adminClass == 'WalletTransferAdmin' and not app.user.hasFamilyMembers() and not admin.isAdmin() %}
+									{% set admin_display = false %}
+								{% endif %}
+
+								{% if if adminClass in ['PerformanceGroupAdmin','WalletDiscountTypeAdmin'] and not pz_has_event_financial_support %}
+									{% set admin_display = false %}
+								{% endif %}
+
+								{% if adminClass in ['ClubEventEntryOverallAdmin','EventEntryOverallAdmin','EventOrganizeEntryOverallAdmin'] and not app.user.hasRemoteUsers() and not admin.isAdmin() %}
 									{% set admin_display = false %}
 								{% endif %}
 
@@ -43,9 +57,9 @@ file that was distributed with this source code.
                                     <tr>
                                         <td class="sonata-ba-list-label" width="40%">
                                             {# UserAdmin hack #}
-                                            {% if get_class(admin) == 'UserAdmin' and not admin.showAddBtnInDashboard() %}
+                                            {% if adminClass == 'UserAdmin' and not admin.showAddBtnInDashboard() %}
                                                 {{ 'user_account.dashboard.title'|trans({}, admin.translationdomain) }}
-                                            {% elseif (get_class(admin) == 'EventOrganizeEntryAdmin' and admin.isGranted('ROLE_PZ_ADMIN_EVENT_ORGANIZE_ENTRY_ADMIN')) %}
+                                            {% elseif (adminClass == 'EventOrganizeEntryAdmin' and admin.isGranted('ROLE_PZ_ADMIN_EVENT_ORGANIZE_ENTRY_ADMIN')) %}
 												Přihlášky
                                             {% else %}
                                                 {{ admin.label|trans({}, admin.translationdomain) }}
@@ -81,13 +95,13 @@ file that was distributed with this source code.
                                                     </a>
                                                 {% endif %}
                                                 {# UserAdmin hack #}
-                                                {% if get_class(admin) == 'UserAdmin' and not admin.isAdmin() and admin.hasroute('edit') and admin.isGranted('EDIT') %}
+                                                {% if adminClass == 'UserAdmin' and not admin.isAdmin() and admin.hasroute('edit') and admin.isGranted('EDIT') %}
                                                     <a class="btn btn-link btn-flat" href="{{ admin.generateUrl('edit', {'id': app.user.id})}}">
                                                         <i class="glyphicon glyphicon-edit"></i>
                                                         {% trans from 'Ok99PrivateZoneAdminBundle' %}link_edit{% endtrans -%}
                                                     </a>
                                                 {# SettingsAdmin hack #}
-                                                {% elseif get_class(admin) == 'SettingsAdmin' and admin.hasroute('edit') and admin.isGranted('EDIT') %}
+                                                {% elseif adminClass == 'SettingsAdmin' and admin.hasroute('edit') and admin.isGranted('EDIT') %}
                                                     <a class="btn btn-link btn-flat" href="{{ admin.generateUrl('edit', {'id': 1})}}">
                                                         <i class="glyphicon glyphicon-edit"></i>
                                                         {% trans from 'Ok99PrivateZoneAdminBundle' %}link_edit{% endtrans -%}

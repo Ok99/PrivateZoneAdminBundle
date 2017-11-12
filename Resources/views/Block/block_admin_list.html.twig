@@ -57,7 +57,7 @@ file that was distributed with this source code.
                                     <tr>
                                         <td class="sonata-ba-list-label" width="40%">
                                             {# UserAdmin hack #}
-                                            {% if adminClass == 'UserAdmin' and not admin.showAddBtnInDashboard() %}
+                                            {% if adminClass == 'UserAdmin' and not admin.isAdmin() %}
                                                 {{ 'user_account.dashboard.title'|trans({}, admin.translationdomain) }}
                                             {% elseif (adminClass == 'EventOrganizeEntryAdmin' and admin.isGranted('ROLE_PZ_ADMIN_EVENT_ORGANIZE_ENTRY_ADMIN')) %}
 												Přihlášky

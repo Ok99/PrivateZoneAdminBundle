@@ -202,7 +202,7 @@ class AuditController extends BaseAuditController
                 if ($role instanceof SwitchUserRole) {
                     $impersonatingUser = $role->getSource()->getUser();
                     if ($impersonatingUser && $impersonatingUser->getId()) {
-                        return $this->getDoctrine()->getRepository('Ok99PrivateZoneUserBundle:User')->findOneBy(array('id' => $impersonatingUser->getId()));
+                        return $this->getDoctrine()->getRepository('Ok99PrivateZoneUserBundle:User')->find($impersonatingUser->getId());
                     }
                     break;
                 }

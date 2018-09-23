@@ -1,14 +1,14 @@
-{% block ok99_privatezone_translations_widget %}
+{% block canabelle_cms_translations_widget %}
 
     {{ form_errors(form) }}
 
-    <div class="ok99_privatezone_translations tabbable nav-tabs-custom">
-        <ul class="ok99_privatezone_translationsLocales nav nav-tabs">
+    <div class="canabelle_cms_translations tabbable nav-tabs-custom">
+        <ul class="canabelle_cms_translationsLocales nav nav-tabs">
         {% for translationsFields in form %}
             {% set locale = translationsFields.vars.name %}
 
             <li {% if loop.first %}class="active"{% endif %}>
-                <a href="#" data-toggle="tab" data-target=".ok99_privatezone_translationsFields-{{ locale }}">
+                <a href="#" data-toggle="tab" data-target=".canabelle_cms_translationsFields-{{ locale }}">
                     <em class="flag flag-{{ locale}}">{{ locale|capitalize }}</em>
                     {% if translationsFields.vars.required %}*{% endif %}
                 </a>
@@ -16,11 +16,11 @@
         {% endfor %}
         </ul>
 
-        <div class="ok99_privatezone_translationsFields tab-content">
+        <div class="canabelle_cms_translationsFields tab-content">
         {% for translationsFields in form %}
             {% set locale = translationsFields.vars.name %}
 
-            <div class="ok99_privatezone_translationsFields-{{ locale }} tab-pane {% if loop.first %}active{% endif %}">
+            <div class="canabelle_cms_translationsFields-{{ locale }} tab-pane {% if loop.first %}active{% endif %}">
                 {{ form_errors(translationsFields) }}
                 {{ form_widget(translationsFields) }}
             </div>
@@ -29,6 +29,6 @@
     </div>
 {% endblock %}
 
-{% block ok99_privatezone_translationsForms_widget %}
-    {{ block('ok99_privatezone_translations_widget') }}
+{% block canabelle_cms_translationsForms_widget %}
+    {{ block('canabelle_cms_translations_widget') }}
 {% endblock %}

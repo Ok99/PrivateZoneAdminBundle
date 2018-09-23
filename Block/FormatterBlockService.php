@@ -43,7 +43,7 @@ class FormatterBlockService extends \Sonata\FormatterBundle\Block\FormatterBlock
     */
     public function buildEditForm(FormMapper $formMapper, BlockInterface $block)
     {
-        $formMapper->add('translations', 'ok99_privatezone_translations', array(
+        $formMapper->add('translations', 'canabelle_cms_translations', array(
             'label' => false,
             'locales' => $block->getSite()->getLocales(),
             'fields' => array(

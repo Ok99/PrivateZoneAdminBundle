@@ -106,6 +106,12 @@ file that was distributed with this source code.
                                                         <i class="glyphicon glyphicon-edit"></i>
                                                         {% trans from 'Ok99PrivateZoneAdminBundle' %}link_edit{% endtrans -%}
                                                     </a>
+                                                {# WalletQrPaymentAdmin hack #}
+                                                {% elseif adminClass == 'WalletQrPaymentAdmin' and admin.hasroute('create') and admin.isGranted('create') %}
+                                                    <a class="btn btn-link btn-flat" href="{{ admin.generateUrl('create')}}">
+                                                        <i class="fa fa-plus-circle"></i>
+                                                        {% trans from 'Ok99PrivateZoneAdminBundle' %}link_create{% endtrans -%}
+                                                    </a>
                                                 {% endif %}
                                             </div>
                                         </td>

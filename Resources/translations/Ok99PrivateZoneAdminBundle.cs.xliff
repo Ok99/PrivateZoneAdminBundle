@@ -46,6 +46,10 @@
                 <source>breadcrumb.link_dashboard</source>
                 <target>Úvod</target>
             </trans-unit>
+			<trans-unit id="link_create">
+				<source>link_create</source>
+				<target>Vytvořit</target>
+			</trans-unit>
 			<trans-unit id="link_edit">
 				<source>link_edit</source>
 				<target>Editovat</target>

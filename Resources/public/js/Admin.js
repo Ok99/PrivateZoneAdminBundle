@@ -215,10 +215,12 @@ var Admin = {
                 select2 = input.closest('.select2-container')
                 ;
 
-            if (fieldShortDescription.length) {
+            if (input.attr('type') === 'checkbox') {
+                target = input.parent().parent();
+            } else if (fieldShortDescription.length) {
                 target = fieldShortDescription;
             } else if (select2.length) {
-                target= select2;
+                target = select2;
             }
 
             target.popover({

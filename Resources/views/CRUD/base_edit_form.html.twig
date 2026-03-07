@@ -28,16 +28,31 @@
 					{% set has_tab = ((admin.formtabs|length == 1 and admin.formtabs|keys[0] != 'default') or admin.formtabs|length > 1 ) %}
 
 					{% if has_tab %}
+						<script>
+							document.addEventListener("DOMContentLoaded", function () {
+								if (window.location.hash) {
+									const id = window.location.hash.substring(1);
+									const element = document.getElementById(id);
+									if (element) {
+										window.pz.init();
+										element.click();
+									}
+								}
+							});
+						</script>
+
 						<div class="col-md-12">
 							<div class="nav-tabs-custom">
 								<ul class="nav nav-tabs" role="tablist">
 									{% for name, form_tab in admin.formtabs %}
-										<li{% if loop.index == 1 %} class="active"{% endif %}><a href="#tab_{{ admin.uniqid }}_{{ loop.index }}" data-toggle="tab"><span class="glyphicon glyphicon-exclamation-sign has-errors hide"></span> {{ admin.trans(name, {}, form_tab.translation_domain) }}</a></li>
+										{% set tabId = form_tab.tab_id is defined ? form_tab.tab_id : admin.uniqid ~ '_' ~ loop.index %}
+										<li{% if loop.index == 1 %} class="active"{% endif %}><a href="#tab_{{ tabId }}" data-toggle="tab"><span class="glyphicon glyphicon-exclamation-sign has-errors hide"></span> {{ admin.trans(name, {}, form_tab.translation_domain) }}</a></li>
 									{% endfor %}
 								</ul>
 								<div class="tab-content">
 									{% for code, form_tab in admin.formtabs %}
-										<div class="tab-pane fade{% if loop.first %} in active{% endif %}" id="tab_{{ admin.uniqid }}_{{ loop.index }}">
+										{% set tabId = form_tab.tab_id is defined ? form_tab.tab_id : admin.uniqid ~ '_' ~ loop.index %}
+										<div class="tab-pane fade{% if loop.first %} in active{% endif %}" id="tab_{{ tabId }}">
 											<div class="box-body  container-fluid">
 												<div class="sonata-ba-collapsed-fields">
 													{% if form_tab.description != false %}

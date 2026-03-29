@@ -217,6 +217,8 @@ var Admin = {
 
             if (input.attr('type') === 'checkbox') {
                 target = input.parent().parent();
+            } else if (input.attr('type') === 'radio') {
+                target = input.parent().parent();
             } else if (fieldShortDescription.length) {
                 target = fieldShortDescription;
             } else if (select2.length) {

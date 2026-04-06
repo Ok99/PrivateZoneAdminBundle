@@ -53,6 +53,10 @@ file that was distributed with this source code.
 									{% set admin_display = false %}
 								{% endif %}
 
+								{% if adminClass == 'SentEmailAdmin' and not admin.isAdmin() %}
+									{% set admin_display = false %}
+								{% endif %}
+
                                 {% if admin_display and (admin.hasroute('create') and admin.isGranted('CREATE') or admin.hasroute('list') and admin.isGranted('LIST')) %}
                                     <tr>
                                         <td class="sonata-ba-list-label" width="40%">

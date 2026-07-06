@@ -197,42 +197,38 @@ var Admin = {
     add_pretty_errors: function(subject) {
         Admin.log('[core|add_pretty_errors] configure pretty errors on', subject);
         jQuery('div.sonata-ba-field-error', subject).each(function(index, element) {
-            var input = jQuery(':input', element);
+            var input = jQuery(':input:visible', element);
 
             if (!input.length) {
                 return;
             }
 
-            var message = jQuery('div.sonata-ba-field-error-messages', element).html();
-            jQuery('div.sonata-ba-field-error-messages', element).remove();
-
-            if (!message || message.length == 0) {
-                return;
+            if (input.length > 1) {
+                input = $(input[0]);
             }
 
-            var target = input,
-                fieldShortDescription = input.closest('.field-container').find('.field-short-description'),
-                select2 = input.closest('.select2-container')
-                ;
+            var error = jQuery('div.sonata-ba-field-error-messages', element);
+            var wrappers = null;
 
-            if (input.attr('type') === 'checkbox') {
-                target = input.parent().parent();
-            } else if (input.attr('type') === 'radio') {
-                target = input.parent().parent();
-            } else if (fieldShortDescription.length) {
-                target = fieldShortDescription;
-            } else if (select2.length) {
-                target = select2;
+            if (
+                input.attr('type') === 'checkbox'
+                || input.attr('type') === 'radio'
+                || input.attr('type') === 'select'
+            ) {
+                wrappers = input.parents('.sonata-ba-field');
+                if (wrappers.length > 0) {
+                    $(wrappers[0]).append(error);
+                }
+            } else if (input.attr('class').indexOf('select2-input') !== -1) {
+                wrappers = input.parents('.select2-container');
+                if (wrappers.length > 0) {
+                    $(wrappers[0]).append(error);
+                }
+            } else {
+                error.insertAfter(input);
             }
 
-            target.popover({
-                content: message,
-                trigger: 'hover',
-                html: true,
-                placement: 'top',
-                template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content alert-error"><p></p></div></div></div>'
-            });
-
+            error.show();
         });
     },
 

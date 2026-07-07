@@ -208,24 +208,10 @@ var Admin = {
             }
 
             var error = jQuery('div.sonata-ba-field-error-messages', element);
-            var wrappers = null;
 
-            if (
-                input.attr('type') === 'checkbox'
-                || input.attr('type') === 'radio'
-                || input.attr('type') === 'select'
-            ) {
-                wrappers = input.parents('.sonata-ba-field');
-                if (wrappers.length > 0) {
-                    $(wrappers[0]).append(error);
-                }
-            } else if (input.attr('class').indexOf('select2-input') !== -1) {
-                wrappers = input.parents('.select2-container');
-                if (wrappers.length > 0) {
-                    $(wrappers[0]).append(error);
-                }
-            } else {
-                error.insertAfter(input);
+            var wrappers = input.parents('.sonata-ba-field');
+            if (wrappers.length > 0) {
+                $(wrappers[0]).append(error);
             }
 
             error.show();
